@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+//Components
+import Navbar from "./components/Navbar";
+
+//Pages
+import MentorPage from "./pages/MentorPage";
+import StudentPage from "./pages/StudentPage";
 
 function App() {
+  const [tasks, setTasks] = useState([
+    {
+      title: "Task 1",
+      description: "Complete the assignment.",
+      status: "Pending",
+    },
+    { title: "Task 2", description: "Review the code.", status: "Pending" },
+  ]);
+  const handleTasks = () => {};
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <Router>
+        <div className="min-h-screen bg-gray-100">
+          <Routes>
+            <Route
+              path="/"
+              element={<MentorPage tasks={tasks} handleTasks={handleTasks} />}
+            />
+            <Route
+              path="/student"
+              element={<StudentPage tasks={tasks} handleTasks={handleTasks} />}
+            />
+          </Routes>
+        </div>
+      </Router>
+    </>
   );
 }
 
