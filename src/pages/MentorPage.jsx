@@ -1,21 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function MentorPage({ tasks, setTasks }) {
-  // const [tasks, setTasks] = useState([]);
+function MentorPage() {
+  const [tasks, setTasks] = useState([]);
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/tasks")
+      .then((response) => {
+        setTasks(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the tasks data", error);
+      });
+  }, []);
+
   const createTask = () => {
-    setTasks([
-      ...tasks,
-      { title: taskTitle, description: taskDescription, status: "Pending" },
-    ]);
-    setTaskTitle("");
-    setTaskDescription("");
+    axios
+      .post("http://localhost:5000/api/tasks", {
+        title: taskTitle,
+        description: taskDescription,
+      })
+      .then((response) => {
+        setTasks([...tasks, response.data]);
+        setTaskTitle("");
+        setTaskDescription("");
+      })
+      .catch((error) => {
+        console.error("There was an error creating the task!", error);
+      });
   };
 
   return (
     <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Mentor Dashboard</h1>
+
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Create New Task</h2>
         <input
@@ -23,7 +44,6 @@ function MentorPage({ tasks, setTasks }) {
           className="border p-2 mb-2 w-full"
           placeholder="Task Title"
           value={taskTitle}
-          required
           onChange={(e) => setTaskTitle(e.target.value)}
         />
         <textarea
@@ -34,7 +54,7 @@ function MentorPage({ tasks, setTasks }) {
         />
         <button
           onClick={createTask}
-          className="bg-emerald-500 text-white p-2  hover:bg-emerald-600"
+          className="bg-slate-900 text-white p-2 rounded"
         >
           Create Task
         </button>
